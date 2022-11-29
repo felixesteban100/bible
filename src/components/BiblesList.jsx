@@ -29,10 +29,10 @@ function BiblesList({getVersion}) {
                     }
                 })
                 
-                console.log(biblesEnglishAndSpanish)
+                // console.log(biblesEnglishAndSpanish)
                 setBibles(biblesEnglishAndSpanish)
             } catch (error) {
-                console.log(error)
+                console.log("error", error)
             }
         }
         fetchBibles()

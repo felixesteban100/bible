@@ -10,6 +10,11 @@ body{
   background-color: rgb(93, 150, 162);
   --header-backgroundColor: black;
   --header--title-color: white;
+  --button-hidde-background: gray;
+
+  --navbar-backgroundColor: gray;
+  --navbar--text-color: white;
+  --navbar--text-color-hover: rgb(47, 158, 255);
 
   --biblesList-container-background: red;
   --bible-container-background: rgb(18, 15, 46);
@@ -32,6 +37,10 @@ body{
   --chapter-number-color: white;
 
   --chapter-content-background: white;
+  --chapter-button-background: white;
+  --chapter-button-color: black;
+  --chapter-button-background-hover: white;
+  --chapter-button-color-hover: rgb(50, 45, 192);
 }
 
 /* king james: de4e12af7f28f599-01 */
@@ -44,7 +53,8 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  display: fixed;
+  position: fixed;
+  z-index: 2;
 }
 .header--title{
   color: var(--header--title-color);
@@ -54,7 +64,54 @@ body{
 .header--logo{
   height: 2vw;
 }
+.button-hidde{
+  background-color: var(--button-hidde-background);
+  color: var(--header--title-color);
+  cursor: pointer;
+}
 /* HEADER */
+
+
+/* NAVBAR */
+.navbar-container{
+  margin-top: 5rem;
+  height: 5rem;
+  min-height: 150px;
+  width: 100%;
+  background-color: var(--navbar-backgroundColor);
+  display: flex;
+  /* justify-content: space-around; */
+  gap: 1rem;
+  align-items: center;
+  position: fixed;
+  padding-left: 2rem;
+  z-index: 1;
+}
+.getHome-logo{
+  height: 3vw;
+  cursor: pointer;
+}
+.getHome-logo:hover{
+  height: 4vw;
+}
+.navbar-text{
+  color: var(--navbar--text-color);
+  font-size: 2vw;
+}
+.navbar-text:hover{
+  color: var(--navbar--text-color-hover);
+}
+
+/* NAVBAR */
+
+
+/* APP CONTENT ----------------- */
+
+.app-content{
+  margin-top: 15vw; 
+  position: relative;
+}
+
 
 /* BIBLELIST */
 .biblesList-container{
@@ -224,7 +281,27 @@ body{
 .chapter-content > p{
   font-size: 3vw;
 }
+.controls{
+  display: flex;
+  margin: 1rem auto;
+  justify-content: space-around;
+
+}
+.chapter-button{
+  background-color: var(--chapter-button-background);
+  color: var(--chapter-button-color);
+  font-size: 3vw;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+.chapter-button:hover{
+  background-color: var(--chapter-button-background-hover);
+  color: var(--chapter-button-color-hover);
+}
 /* DISPLAYCHAPTER */
+
+/* APP CONTENT ----------------- */
 
 
 
@@ -239,6 +316,39 @@ body{
   }
   /* HEADER RESPONSIVE */
 
+  /* NAVBAR RESPONSIVE */
+  .navbar-container{
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 0;
+    align-items: center;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-bottom: 1rem;
+  }
+  .getHome-logo{
+    margin-top: 0.5rem;
+    height: 10vw;
+  }
+  .getHome-logo:hover{
+    height: 12vw;
+  }
+  .navbar-text{
+    margin-top: 0.5rem;
+    font-size: 4vw;
+  }
+  /* NAVBAR RESPONSIVE */
+
+
+
+  /* APP CONTENT RESPONSIVE ----------------- */
+
+  .app-content{
+    /* margin-top: 42vw;  */
+    /* z-index: 1; */
+  }
 
   /* BIBLELIST RESPONSIVE */
   .biblesList-container{
@@ -283,6 +393,10 @@ body{
   .p{
     font-size: 5vw;
   }
+  .chapter-button{
+    font-size: 5vw;
+  }
   /* DISPLAYCHAPTER RESPONSIVE*/
   
+  /* APP CONTENT RESPONSIVE ----------------- */
 }

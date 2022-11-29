@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import "../App.css"
 
-function SelecteBooks({selectedBibleVersionById, getChapter}) {
+function SelecteBooks({selectedBibleVersionById, getBook}) {
     const [bibleVersionBooks, setBibleVersionBooks] = useState([])
 
     useEffect(() => {
@@ -33,7 +33,7 @@ function SelecteBooks({selectedBibleVersionById, getChapter}) {
             {
                 bibleVersionBooks.map((current, index) => {
                     return(
-                        <div key={index}  className='selectedbook-container' onClick={() => getChapter(current)}>
+                        <div key={index}  className='selectedbook-container' onClick={() => getBook(current)}>
                             <p className='book-name'>{current.name} ({current.id})</p>
                         </div>
                     )

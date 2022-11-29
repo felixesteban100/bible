@@ -2,7 +2,7 @@
   "name": "bible_app",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://felixesteban100.github.io/bible",
+  "homepage": "https://felixesteban100.github.io/bible/",
   "type": "module",
   "scripts": {
     "predeploy": "npm run build",

@@ -5,98 +5,116 @@ import BiblesList from './components/BiblesList'
 import SelecteBooks from './components/SelecteBooks'
 import SelecteChapter from './components/SelecteChapter'
 import DisplayChapter from './components/DisplayChapter'
+import Navbar from './components/Navbar'
 
 function App() {
-  const [bibleListDisplay, setBibleListDisplay] = useState(true)
+  const [bibleListDisplay, setBibleListDisplay] = useState(undefined)
   const [selectedBibleVersionById, setSelectedBibleVersionById] = useState()
+  const [selectedBibleVersionAllInfo, setSelectedBibleVersionAllInfo] = useState()
   const [selectedBookId, setSelectedBookId] = useState()
+  const [selectedBookAllInfo, setSelectedBookAllInfo] = useState()
   const [selectedChapterId, setSelectedChapterId] = useState()
+  const [selectedChapterAllInfo, setSelectedChapterAllInfo] = useState()
+
+  const [hiddeNavbar, setHiddeNavbar] = useState(false)
+
+
+  function returnHome(){
+    setBibleListDisplay(undefined)
+    setSelectedBibleVersionById(undefined)
+    setSelectedBibleVersionAllInfo(undefined)
+    setSelectedBookId(undefined)
+    setSelectedBookAllInfo(undefined)
+    setSelectedChapterId(undefined)
+    setSelectedChapterAllInfo(undefined)
+  }
 
   function getVersion(bibleVersion){
-    // console.log(bibleVersion.id)
+    setSelectedBibleVersionAllInfo(bibleVersion)
     setSelectedBibleVersionById(bibleVersion.id)
-    displayBooks()
+    setBibleListDisplay("book")
   }
 
-  function displayBooks(){
-    setBibleListDisplay(false)
-  }
-
-  function getBack(){
-    setBibleListDisplay(true)
-    setSelectedBibleVersionById(undefined)
-    setSelectedBookId(undefined)
-    setSelectedChapterId(undefined)
-  }
-
-  function getChapter(book){
-    console.log(book.id) 
+  function getBook(book){
+    setSelectedBookAllInfo(book)
     setSelectedBookId(book.id)
+    setBibleListDisplay("chapter")
   }
 
   function getChapterInfo(chapter){
-    console.log(chapter.id)
+    setSelectedChapterAllInfo(chapter)
     setSelectedChapterId(chapter.id)
+    setBibleListDisplay("chapterInfo")
   }
 
-  // useEffect(() => {
-  //     // async function fetchBibles(){
-  //     //     try {
-  //     //         let header = {
-  //     //             method: 'GET',
-  //     //             mode: 'cors',
-  //     //             headers: {
-  //     //                 'Content-Type': 'application/json',
-  //     //                 'api-key': '4aad4efe36364c95d44b4bbbdcffa9b0'
-  //     //             }  
-  //     //         };
-  //     //         const data = await fetch(`https://api.scripture.api.bible/v1/bibles/${selectedBibleVersionById}`, header);
-  //     //         const bible = await data.json()
-  //     //         if (bible.data !== undefined) {
-  //     //           // console.log(bible.data)
-  //     //         }
-  //     //     } catch (error) {
-  //     //         console.log(error)
-  //     //     }
-  //     // }
-  //     // fetchBibles()
-  // }, [selectedBibleVersionById])
+  function getBack(value){
+    switch(value){
+      case "book":
+        setBibleListDisplay(value)  
+        setSelectedBookAllInfo(undefined)
+        setSelectedBookId(undefined)
+        setSelectedChapterAllInfo(undefined)
+        setSelectedChapterId(undefined)
+      break;
+      case "chapter":
+        setBibleListDisplay(value)  
+        setSelectedChapterAllInfo(undefined)
+        setSelectedChapterId(undefined)
+      break;
+      case "chapterInfo":
+        setBibleListDisplay(value) 
+      break;
+    }
+  }
 
   return (
     <div className="App">
-      <Header />
+      <Header 
+        setHiddeNavbar={setHiddeNavbar}
+      />
       {
-        bibleListDisplay && 
-        <BiblesList 
-          getVersion={getVersion}
+        hiddeNavbar === false &&
+        <Navbar 
+          returnHome={returnHome}
+          getBack={getBack}
+          selectedBibleVersionAllInfo={selectedBibleVersionAllInfo}
+          selectedBookAllInfo={selectedBookAllInfo}
+          selectedChapterAllInfo={selectedChapterAllInfo}
         />
       }
-      {
-        (!bibleListDisplay) &&
-        <button onClick={() => getBack()}>get back</button>
-      }
-      {
-        (!bibleListDisplay && selectedBookId === undefined) &&
-        <SelecteBooks 
-          getChapter={getChapter}
-          selectedBibleVersionById={selectedBibleVersionById}
-        />
-      }
-      {
-        (!bibleListDisplay && selectedBookId !== undefined && selectedChapterId === undefined) &&
-        <SelecteChapter 
-          getChapterInfo={getChapterInfo}
-          selectedBibleVersionById={selectedBibleVersionById}
-          selectedBookId={selectedBookId}
-        />
-      }
-      {
-        (!bibleListDisplay && selectedBookId !== undefined && selectedChapterId !== undefined) &&
-        <DisplayChapter
-          selectedBibleVersionById={selectedBibleVersionById}
-          selectedChapterId={selectedChapterId}
-        />
-      }
+      <div className='app-content'>
+        
+        {
+          bibleListDisplay === undefined && 
+          <BiblesList 
+            getVersion={getVersion}
+          />
+        }
+        {
+          (bibleListDisplay === "book") &&
+          <SelecteBooks 
+            getBook={getBook}
+            selectedBibleVersionById={selectedBibleVersionById}
+          />
+        }
+        {
+          (bibleListDisplay === "chapter") &&
+          <SelecteChapter 
+            getChapterInfo={getChapterInfo}
+            selectedBibleVersionById={selectedBibleVersionById}
+            selectedBookId={selectedBookId}
+          />
+        }
+        {
+          (bibleListDisplay === "chapterInfo") &&
+          <DisplayChapter
+            selectedBibleVersionById={selectedBibleVersionById}
+            selectedChapterId={selectedChapterId}
+            setSelectedChapterId={setSelectedChapterId}
+            setSelectedChapterAllInfo={setSelectedChapterAllInfo}
+          />
+        }
+      </div>
     </div>
   )
 }
