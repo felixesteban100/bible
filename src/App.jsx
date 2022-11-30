@@ -82,7 +82,7 @@ function App() {
           selectedChapterAllInfo={selectedChapterAllInfo}
         />
       }
-      <div className='app-content'>
+      <div className={hiddeNavbar === true ? "app-content2" : "app-content"}>
         
         {
           bibleListDisplay === undefined && 

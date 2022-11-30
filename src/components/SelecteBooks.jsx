@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import "../App.css"
+import 'animate.css';
 
 function SelecteBooks({selectedBibleVersionById, getBook}) {
     const [bibleVersionBooks, setBibleVersionBooks] = useState([])
@@ -29,7 +30,7 @@ function SelecteBooks({selectedBibleVersionById, getBook}) {
     }, [])
 
     return (
-        <div className='selectedbooks-container'>
+        <div className='animate__animated animate__fadeIn selectedbooks-container'>
             {
                 bibleVersionBooks.map((current, index) => {
                     return(

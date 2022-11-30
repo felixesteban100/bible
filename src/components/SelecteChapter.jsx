@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import "../App.css"
+import 'animate.css';
 
 function SelecteChapter({getChapterInfo, selectedBookId, selectedBibleVersionById}) {
     const [bibleVersionBookChapter, setBibleVersionBookChapter] = useState([])
@@ -29,7 +30,7 @@ function SelecteChapter({getChapterInfo, selectedBookId, selectedBibleVersionByI
     }, [])
 
     return (
-        <div className='selectedchapters-container'>
+        <div className='animate__animated animate__fadeIn selectedchapters-container'>
             {
                 bibleVersionBookChapter.map((current, index) => {
                     return(
