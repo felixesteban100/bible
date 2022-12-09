@@ -1,45 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import "../App.css"
 import 'animate.css';
 
-function DisplayChapter({selectedBibleVersionById, selectedChapterId, setSelectedChapterId, setSelectedChapterAllInfo}) { 
-    const [chapter, setChapter] = useState(undefined)
-    const [changeChapterId, setChangeChapterId] = useState(undefined)
-
-    const header = {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-            'Content-Type': 'application/json',
-            'api-key': '4aad4efe36364c95d44b4bbbdcffa9b0'
-        }  
-    };
-
-    useEffect(() => {
-        async function fetchChapter(id){
-            try {
-                const data = await fetch(`https://api.scripture.api.bible/v1/bibles/${selectedBibleVersionById}/chapters/${id}`, header);
-                const chapter = await data.json()
-                if (chapter.data !== undefined) {
-                //   console.log(chapter.data)
-                  setChapter(chapter.data)
-                  setSelectedChapterId(chapter.data.id)
-                  setSelectedChapterAllInfo(chapter.data)
-                }
-            } catch (error) {
-                console.log("error", error)
-            }
-        }
-        
-        if (changeChapterId === undefined) {
-            fetchChapter(selectedChapterId)
-        }
-
-        if (changeChapterId !== undefined) {
-            fetchChapter(changeChapterId)
-        }
-    }, [changeChapterId])
-
+function DisplayChapter({}) { 
     return (
         <div>
             {

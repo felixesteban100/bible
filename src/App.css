@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after{
+  box-sizing: border-box;
+}
+
 *{
   margin: 0;
   padding: 0;
@@ -6,75 +12,45 @@
 }
 
 body{
-  margin: 0;
-  background-color: rgb(57, 54, 54);
+  background-color: rgb(7, 6, 15);
   --header-backgroundColor: rgb(0, 0, 0);
   --header--title-color: white;
   --header--title-color-hover: rgb(19, 19, 18);
-  --button-hidde-background: rgb(13, 11, 44);
-  --button-hidde-background-hover: rgb(237, 237, 237);
+  --header--border-color: white;
   
-  --navbar-backgroundColor: rgb(37, 36, 36);
+  --navbar-backgroundColor: rgb(21, 21, 22);
   --navbar--text-color: white;
-  --navbar--text-color-hover: rgb(0, 195, 255);
 
-  --biblesList-container-background: rgb(255, 255, 255);
-  --bible-container-background: rgb(13, 12, 31);
-
-  --bible-name-color: rgb(201, 206, 108);
-  --bible-namelocal-color: rgb(193, 89, 89);
-  --bible-abbreviation-color: rgb(193, 89, 89);
-
-  --bible-description-background: rgb(13, 12, 31);
-  --bible-description-title-color: white;
-  --bible-descrition-info-color: white;
-
-  --bible-countries-title-color: white;
-  --bible-countrie-background: rgb(13, 12, 31);
-  --bible-countrie-name-color: white;
-  --bible-languages-title-color: white;
-  --bible-language-background: rgb(13, 12, 31);
-  --bible-language-name-color: white;
-  
-  --selectedbook-container-background: rgb(13, 12, 31);
-  --book-name-color: white;
-
-  --selectedchapter-container-background: rgb(13, 12, 31);
-  --chapter-number-color: white;
-
-  --chapter-content-background: rgb(13, 12, 31);
-  --chapter-button-background: rgb(13, 12, 31);
-  --chapter-button-color: white;
-  --chapter-button-background-hover: white;
-  --chapter-button-color-hover: rgb(50, 45, 192);
+  --text-color: white;
+  --content-background: rgb(11, 11, 29);
 }
 
 /* king james: de4e12af7f28f599-01 */
 
 /* HEADER */
 .header{
-  height: 7vw;
+  height: 4rem;
   width: 100%;
   background-color: var(--header-backgroundColor);
   display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
-  border-bottom: 1px solid var(--header--title-color);
+  /* border-bottom: 1px solid var(--header--border-color); */
   z-index: 2;
   padding: 1rem;
 }
 .header--title{
   color: var(--header--title-color);
-  font-size: 4vw;
+  font-size: 2vw;
   margin-right: 1rem;
 }
 .header--logo{
-  height: 4vw;
+  height: 2vw;
 }
 .button-hidde{
   background-color: var(--button-hidde-background);
-  color: var(--header--title-color);
+  color: var(--button-hidde-color);
   cursor: pointer;
   margin-left: 1rem;
   padding: 0.5rem;
@@ -82,267 +58,67 @@ body{
 }
 .button-hidde:hover{
   background-color: var(--button-hidde-background-hover);
-  color: var(--header--title-color-hover);
+  color: var(--button-hidde-color-hover);
 }
 /* HEADER */
 
 
 /* NAVBAR */
 .navbar-container{
-  margin-top: 8vw;
-  height: 5rem;
-  min-height: 100px;
-  width: 100%;
+  margin-top: 4rem;
+  height: fit-content;
+  width: 100vw;
   background-color: var(--navbar-backgroundColor);
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2 , 30vw);
   gap: 1rem;
+  justify-content: center;
   align-items: center;
-  position: fixed;
-  z-index: 1;
-  padding-top: 1rem;
-  padding-left: 8rem;
+  padding: 2rem;
 }
-.getHome-logo{
-  height: 3vw;
-  cursor: pointer;
+.inputFinder-container{
+  height: fit-content;
+  width: 100%;
+  display: flex;
 }
-.getHome-logo:hover{
-  height: 4vw;
+.inputFinder{
+  height: fit-content;
+  width: 100%;
+  font-size: 1.5rem;
 }
-.navbar-text{
-  color: var(--navbar--text-color);
-  font-size: 2vw;
+.select-version-container{
+  height: fit-content;
+  width: 100%;
 }
-.navbar-text:hover{
-  color: var(--navbar--text-color-hover);
+.select-version{
+  font-size: 1.5rem;
+  height: 50%;
+  width: 100%;
 }
-.navbar-label{
-  color: var(--navbar--text-color);
-}
-
 /* NAVBAR */
 
 
 /* APP CONTENT ----------------- */
 
 .app-content{
-  margin-top: 17rem;
+  color: var(--text-color);
 }
 
-.app-content2{
-  margin-top: 10rem;
+.content-container{
+  /* background-color: var(--content-background); */
+  text-align: justify;
+  margin: 0 auto;
+  width: 70vw;
 }
 
-
-/* BIBLELIST */
-.select-languages{
-  display: flex;
-  justify-content: center;
-}
-.select-languages > select{
-  font-size: 2vw;
-}
-.biblesList-container{
-  display: grid;
-  grid-template-columns: repeat(3, 20vw);
-  justify-content: center;
-  gap: 2rem;
-  margin: 2rem;
-}
-.bible-container{
-  width: 100%;
-  height: 100%;
-  background-color: var(--bible-container-background);
-  cursor: pointer;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
+.content-title{
+  font-size: 3rem;
   text-align: center;
 }
-.bible-name{
-  color: var(--bible-name-color);
-  font-size: 2vw;
-}
-.bible-namelocal{
-  color: var(--bible-namelocal-color);
-  font-size: 2vw;
-}
-.bible-abbreviation{
-  color: var(--bible-abbreviation-color);
-  font-size: 2vw;
-}
-.bible-description{
-  width: 75%;
-  background-color: var(--bible-description-background);
-  margin: 0.5rem auto;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-}
-.bible-description-title{
-  color: var(--bible-description-title-color);
-  font-size: 2vw;
-}
-.bible-description-info{
-  color: var(--bible-descrition-info-color);
-  font-size: 1.5vw;
-}
-.bible-countries{
-  width: 75%;
-  margin: 0.5rem auto;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-}
-.bible-countries-title{
-  color: var(--bible-countries-title-color);
-  font-size: 3vw;
-}
-.bible-countriesList{
-  display: grid;
-  grid-template-columns: repeat(1, 50%);
-  justify-content: center;
-  gap: 0.5rem;
-}
-.bible-countrie{
-  background-color: var(--bible-countrie-background);
-  border-radius: 0.5rem;
-  padding: 0.2rem;
-}
-.bible-countrie-name{
-  font-size: 1vw;
-  color: var(--bible-countrie-name-color);
-}
-.bible-languages{
-  width: 75%;
-  margin: 0.5rem auto;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-}
-.bible-languages-title{
-  color: var(--bible-languages-title-color);
-  font-size: 3vw;
-}
-.bible-languagesList{
-  display: grid;
-  grid-template-columns: repeat(1, 50%);
-  justify-content: center;
-  gap: 0.5rem;
-}
-.bible-language{
-  width: fit-content;
-  min-width: 100%;
-  background-color: var(--bible-language-background);
-  border-radius: 0.5rem;
-  padding: 0.2rem;
-}
-.bible-language-name{
-  font-size: 2vw;
-  color: var(--bible-language-name-color);
-}
-/* BIBLELIST */
 
-
-
-/* SELECTEDBOOKS */
-.selectedbooks-container{
-  display: grid;
-  grid-template-columns: repeat(3, 30vw);
-  justify-content:center;
-  gap: 0.5rem;
-  margin: 2rem 0;
+.content-verse{
+  font-size: 2rem;
 }
-.selectedbook-container{
-  cursor: pointer;
-  background-color: var(--selectedbook-container-background);
-  padding: 1rem;
-  border-radius: 0.5rem;
-}
-.book-name{
-  color: var(--book-name-color);
-  font-size: 2.5vw;
-}
-/* SELECTEDBOOKS */
-
-
-
-/* SELECTEDCHAPTERS */
-.selectedchapters-container{
-  display: grid;
-  grid-template-columns: repeat(5, 15vw);
-  justify-content:center;
-  gap: 0.5rem;
-  margin: 2rem 0;
-}
-.selectedchapter-container{
-  cursor: pointer;
-  background-color: var(--selectedchapter-container-background);
-  padding: 1rem;
-  border-radius: 0.5rem;
-}
-.chapter-number{
-  color: var(--chapter-number-color);
-  font-size: 5vw;
-}
-/* SELECTEDCHAPTERS */
-
-
-
-/* DISPLAYCHAPTER */
-/* .s1{
-  font-size: 2vw;
-  font-weight: 800;
-} */
-.chapter-content{
-  background-color: var(--chapter-content-background);
-  margin: 0 auto;
-  width: 90vw;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-}
-.chapter-title{
-  margin: 1rem auto;
-  font-weight: 800;
-  font-size: 5vw;
-  width: fit-content;
-  background-color: var(--chapter-content-background);
-  color: var(--chapter-button-color);
-  padding: 1rem 5rem;
-  border-radius: 0.5rem;
-}
-.v{
-  font-weight: 800;
-  font-size: 4vw;
-  margin-right: 0.2rem;
-}
-.chapter-content > p{
-  font-size: 3vw;
-  color: var(--chapter-button-color);
-}
-.controls{
-  display: flex;
-  margin: 1rem auto;
-  justify-content: space-around;
-
-}
-.chapter-button{
-  background-color: var(--chapter-button-background);
-  color: var(--chapter-button-color);
-  font-size: 3vw;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-.chapter-button:hover{
-  background-color: var(--chapter-button-background-hover);
-  color: var(--chapter-button-color-hover);
-}
-.chapter-button-none{
-  background-color: var(--chapter-button-background);
-  color: var(--chapter-button-color);
-  font-size: 3vw;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  cursor: none;
-}
-/* DISPLAYCHAPTER */
 
 /* APP CONTENT ----------------- */
 
@@ -358,108 +134,17 @@ body{
   }
   /* HEADER RESPONSIVE */
 
+
   /* NAVBAR RESPONSIVE */
   .navbar-container{
-    margin-top: 8vw;
-    /* height: fit-content; */
-    display: flex;
-    /* flex-direction: column; */
-    /* justify-content: start; */
-    gap: 0;
-    /* align-items: center; */
-    padding-left: 6rem;
-  }
-  .getHome-logo{
-    margin-top: 0.5rem;
-    height: 7vw;
-  }
-  .getHome-logo:hover{
-    height: 12vw;
-  }
-  .navbar-text{
-    margin-top: 0.5rem;
-    font-size: 5vw;
-    margin-left: 0.5rem;
+    grid-template-columns: repeat(1 , 50%);
+    gap: 1rem;
   }
   /* NAVBAR RESPONSIVE */
 
 
 
   /* APP CONTENT RESPONSIVE ----------------- */
-
-  .app-content{
-    margin-top: 11rem;
-  }
-
-  .app-content2{
-    margin-top: 6rem;
-  }
-
-  /* BIBLELIST RESPONSIVE */
-  .select-languages > select{
-    font-size: 5vw;
-  }
-  .biblesList-container{
-    grid-template-columns: repeat(2, 35vw);
-  }
-  .bible-name{
-    color: var(--bible-name-color);
-    font-size: 5vw;
-  }
-  .bible-namelocal{
-    font-size: 3vw;
-  }
-  .bible-abbreviation{
-    font-size: 3vw;
-  }
-  .bible-description-title{
-    font-size: 3.5vw;
-  }
-  .bible-description-info{
-    font-size: 3vw;
-  }
-  .bible-countries-name{
-    font-size: 3vw;
-  }
-  .bible-language-name{
-    font-size: 3vw;
-  }
-  /* BIBLELIST RESPONSIVE */
-
-
-  /* SELECTEDBOOKS */
-  .book-name{
-    font-size: 3.5vw;
-  }
-  /* SELECTEDBOOKS */
-
-
-  /* SELECTEDCHAPTERS */
-  .chapter-number{
-    font-size: 5vw;
-  }
-  /* SELECTEDCHAPTERS */
-
-
-
-  /* DISPLAYCHAPTER RESPONSIVE*/
-  /* .s1{
-    font-size: 5vw;
-    font-weight: 800;
-  } */
-  .chapter-title{
-    font-size: 8vw;
-  }
-  .v{
-    font-size: 6vw;
-  }
-  .chapter-content > p{
-    font-size: 5vw;
-  }
-  .chapter-button{
-    font-size: 5vw;
-  }
-  /* DISPLAYCHAPTER RESPONSIVE*/
   
   /* APP CONTENT RESPONSIVE ----------------- */
 }
