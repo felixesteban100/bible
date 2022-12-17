@@ -1,8 +1,16 @@
-import React from 'react'
+import React , {useEffect} from 'react'
 import '../App.css'
 import 'animate.css';
+import axios from 'axios';
 
-function Navbar({allVersions, englishVersions, spanishVersions, selectedLanguage, seletedVersion, selectVersion, infoFinder, setInfoFinder, find}) {
+function Navbar({ infoFinder, setInfoFinder, find}) {
+    
+    useEffect(() => {  
+        axios.get('https://bolls.life/static/bolls/app/views/languages.json')
+        // .then(data => console.log(data.data))
+    }, [])
+
+
     return (
         <div>
             <div className='navbar-container'>
@@ -13,10 +21,12 @@ function Navbar({allVersions, englishVersions, spanishVersions, selectedLanguage
                         type="text" 
                         onChange={(event) => setInfoFinder(event.target.value)}
                     />
-                    <button className='buttonFinder' onClick={() => find(true)}>Find</button>
+                    <button className='buttonFinder' onClick={() => find()}>
+                        <img className='find-logo' src="https://cdn-icons-png.flaticon.com/512/149/149852.png" alt="" />
+                    </button>
                 </div>
                 <div className='select-version-container'>
-                    <select value={seletedVersion} className="select-version" id="select-version" onChange={(event) => selectVersion(event)}>
+                    {/* <select value={seletedVersion} className="select-version" id="select-version" onChange={(event) => selectVersion(event)}>
                         {
                             selectedLanguage === "All" &&
                             allVersions.map((current, index) => {
@@ -25,23 +35,7 @@ function Navbar({allVersions, englishVersions, spanishVersions, selectedLanguage
                                 )
                             })
                         }
-                        {
-                            selectedLanguage === "English" &&
-                            englishVersions.map((current, index) => {
-                                return(
-                                    <option key={index} value={current}>{current}</option>
-                                )
-                            })
-                        }
-                        {
-                            selectedLanguage === "Spanish" &&
-                            spanishVersions.map((current, index) => {
-                                return(
-                                    <option key={index} value={current}>{current}</option>
-                                )
-                            })
-                        }
-                    </select>
+                    </select> */}
                 </div>
             </div>
         </div>

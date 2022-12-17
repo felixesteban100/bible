@@ -3,132 +3,76 @@ import './App.css'
 import axios from 'axios';
 import Header from './components/Header'
 import Navbar from './components/Navbar'
+import Error from './components/Error';
+import Loading from './components/Loading';
+import Footer from './components/Footer';
+import VerseOfDay from './components/VerseOfDay';
 
 function App() {
-  const [spanishVersions, setSpanishVersions] = useState([])
-  const [englishVersions, setEnglishVersions] = useState([])
-  const [allVersions, setAllVersions] = useState([])
-
-  const [selectedLanguage, setSelectedLanguage] = useState("English")
-  const [selectedVersion, setSelectedVersion] = useState("King James (Authorised) Version")
+  const [error, setError] = useState(undefined)
+  const [loading, setLoading] = useState(false)
 
   const [infoFinder, setInfoFinder] = useState("")
 
-  const [books, setBooks] = useState([])
+  const [selectedVersion, setSelectedVersion] = useState("NASB")
+  const [allBooks, setAllBooks] = useState([])
 
-  const [youCanFind, setYouCanFind] = useState(false)
+  const [selectedBookName, setSelectedBookName] = useState('')
+  const [selectedBookId, setSelectedBookId] = useState()
+  const [selectedChapter, setSelectedChapter] = useState('')
 
   const [chapterInfo, setChapterInfo] = useState([])
 
   useEffect(() => {
-    axios.get('https://bible-go-api.rkeplin.com/v1/translations')
-    .then(res => {
-      const bibles = res
-      const allVersionsArr = []
-      bibles.data.forEach((version) => {
-          allVersionsArr.push(version.version)
-      })
-      setAllVersions(allVersionsArr)
-    
-      const spanishVersionsArr = []
-      bibles.data.forEach((version) => {
-        if (version.language === "spanish") {
-          spanishVersionsArr.push(version.version)
-        }
-      })
-      setSpanishVersions(spanishVersionsArr)
-      
-      const englishVersionsArr = []
-      bibles.data.forEach((version) => {
-        if (version.language === "english") {
-          englishVersionsArr.push(version.version)
-        }
-      })
-      setEnglishVersions(englishVersionsArr)
-    })
-    
-    axios.get('https://bible-go-api.rkeplin.com/v1/books')
-    .then(res => setBooks(res.data))
+    axios.get(`https://bolls.life/get-books/${selectedVersion}/`)
+    .then(res => setAllBooks(res.data))
   }, [])
 
-  useEffect(() => {
-    // console.log(infoFinder)
-    if (youCanFind === true) {
-      if (infoFinder.includes(":")) {
-        const regExpBook = new RegExp(/[A-Za-z]+/)
-        const regExpChapter = new RegExp(/[0-9]+:/)
-        const regExpVerse = new RegExp(/:[0-9]+/)
+  function find(){
+    setError()
+    setLoading(true)
+    setChapterInfo([])
 
-        const book = infoFinder.match(regExpBook)
-        const chapter = infoFinder.match(regExpChapter)
-        const verse = infoFinder.match(regExpVerse)
-        let bookId 
-
-        // books.forEach((current) => {
-        //   if(current.name.toLowerCase() === book.toLowerCase()){
-        //     bookId = current.id
-        //   }
-        // })
-
-        // if (bookId !== undefined && chapter !== undefined) {
-        //   axios.get(`https://bible-go-api.rkeplin.com/v1/books/${bookId}/chapters/${chapter}/verse/${verse}`)
-        //   .then(res => {
-        //     const chapter = res.data
-        //     setChapterInfo(chapter)
-        //     // console.log(chapter)
-        //   })
-        // }else{
-        //   setChapterInfo(["Mislead information, please try again"])
-        // }
-
-      }else{
-        const regExpBook = new RegExp(/[1-3]* *[A-Za-z]+/)
-        const regExpChapter = new RegExp(/[A-Za-z] [1-9]+/)
-      
-        const book = infoFinder.match(regExpBook)[0]
-        let chapter = infoFinder.match(regExpChapter)[0]
-        chapter = chapter.match(/[0-9]/)
-        let bookId 
-        console.log(chapter)
-
-        books.forEach((current) => {
-          if(current.name.toLowerCase() === book.toLowerCase()){
-            bookId = current.id
-          }
-        })
-
-        if (bookId !== undefined && chapter !== undefined) {
-          axios.get(`https://bible-go-api.rkeplin.com/v1/books/${bookId}/chapters/${chapter}`)
-          .then(res => {
-            const chapter = res.data
-            setChapterInfo(chapter)
-          })
-        }else{
-          setChapterInfo(["Mislead information, please try again"])
-        }
+    const regExpBook = new RegExp(/[1-3]* *[A-Za-z]+/)
+    const regExpChapter = new RegExp(/ [1-9]+/)
+  
+    const localselectedBookName = infoFinder.match(regExpBook)[0]
+    let localselectedBookId
+    allBooks.map(current => {
+      if (current.name.toLowerCase() === localselectedBookName.toLowerCase()) {
+        localselectedBookId = current.bookid
       }
-      setYouCanFind(false)
+    })
+    const localselectedChapter = infoFinder.match(regExpChapter)[0].slice(1)
+
+    console.log("localselectedChapter", localselectedChapter)
+
+    if ((localselectedBookId !== undefined && localselectedBookId !== null)  && (localselectedChapter !== undefined && localselectedChapter !== null)) {
+      axios.get(`https://bolls.life/get-chapter/${selectedVersion}/${localselectedBookId}/${localselectedChapter}/`)
+        .then(res => {
+          const chapter = res.data
+          setChapterInfo(chapter)
+          setLoading(false)
+          setError(undefined)
+        })
+        .catch(error => {
+          setLoading(false)
+          setError(error)
+        })
+    }else{
+      setLoading(false)
+      setError({message: "Mislead information, please try again"})
     }
-  }, [youCanFind])
 
-  function selectVersion(event){
-    setSelectedVersion(event.target.value)
-  }
-
-  function find(value){
-    setYouCanFind(value)
+    setSelectedBookName(localselectedBookName[0].toUpperCase() + localselectedBookName.slice(1).toLowerCase())
+    setSelectedBookId(localselectedBookId)
+    setSelectedChapter(localselectedChapter)
   }
 
   return (
     <div className="App">
       <Header />
       <Navbar
-        allVersions={allVersions}
-        spanishVersions={spanishVersions}
-        englishVersions={englishVersions}
-        selectedLanguage={selectedLanguage}
-        selectVersion={selectVersion}
-        selectedVersion={selectedVersion}
         infoFinder={infoFinder}
         setInfoFinder={setInfoFinder}
         find={find}
@@ -136,21 +80,33 @@ function App() {
       <div className="app-content">
         <div>
           {
-            chapterInfo.length === 1 &&
-            <h1>{chapterInfo[0]}</h1>
+            loading &&
+            <Loading/>
           }
-          {/* {
-            (chapterInfo.length !== 0 && chapterInfo.length !== 1) && 
-            <button></button>
-          } */}
           {
-            (chapterInfo.length !== 0 && chapterInfo.length !== 1) && 
+            error !== undefined &&
+            <Error
+              hasErrors={error.message}
+            />
+          }
+          {
+            (loading === false && chapterInfo.length === 0 && chapterInfo[0] !== "Mislead information, please try again") && 
+            <VerseOfDay
+            allBooks={allBooks}
+            setLoading={setLoading}
+            setError={setError}
+            selectedVersion={selectedVersion}
+            />
+          }
+          {
+            (loading === false && chapterInfo.length !== 0 && chapterInfo !== undefined && chapterInfo[0] !== "Mislead information, please try again") && 
             <div className='content-container'>
-              <p className='content-title'>{chapterInfo[0].book.name} {chapterInfo[0].chapterId}</p>
+              <p className='content-title'>{selectedBookName} {selectedChapter}</p>
+              <p className='content-translation'>{selectedVersion}</p>
               {
                 chapterInfo.map((current, index) => {
                   return(
-                    <p key={index} className="content-verse" ><strong>{current.verseId}</strong> {current.verse}</p>
+                    <p key={index} className="content-verse" ><strong>{current.verse}</strong> {current.text}</p>
                   )
                 })
               }
@@ -158,6 +114,7 @@ function App() {
           }
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
@@ -165,43 +122,57 @@ function App() {
 export default App
 
 
+// if (infoFinder.includes(":") && !infoFinder.includes("-")) {
+      //   const regExpBook = new RegExp(/[A-Za-z]+/)
+      //   const regExpChapter = new RegExp(/[0-9]+:/)
+      //   const regExpVerse = new RegExp(/:[0-9]+/)
 
+      //   const book = infoFinder.match(regExpBook)[0]
+      //   const chapter = infoFinder.match(regExpChapter)[0].slice(0, -1)
+      //   const verse = infoFinder.match(regExpVerse)[0].slice(1)
 
-// const token = "4aad4efe36364c95d44b4bbbdcffa9b0"
-  // const header = {
-  //   method: 'GET',
-  //   mode: 'cors',
-  //   headers: {
-  //       'Content-Type': 'application/json',
-  //       'api-key': token
-  //   }  
-  // };
-  // const url = "https://api.scripture.api.bible/v1/bibles"
-  // useEffect(() => {
-  //     axios.get(url, header)
-  //     .then(res => {
-  //       const bibles = res.data
+      //   if (book !== undefined && chapter !== undefined && verse !== undefined) {
+      //     // axios.get(`https://bible-api.com/${book} ${chapter}:${verse}?translation=kjv`)
+      //     axios.get(`https://bolls.life/get-text/kjv/${book}/${chapter}/`)
+      //     .then(res => {
+      //       const chapter = res.data
+      //       // console.log(chapter)
+      //       setChapterInfo(chapter)
+      //     })
+      //     .catch((error) => {
+      //       console.log("error sended:", error.res)
+      //       setError(error)
+      //     })
+      //   }else{
+      //     setChapterInfo(["Mislead information, please try again"])
+      //   }
 
-  //       const allVersionsArr = []
-  //       bibles.data.forEach((version) => {
-  //           allVersionsArr.push(version.name)
-  //       })
-  //       setAllVersions(allVersionsArr)
-      
-  //       const spanishVersionsArr = []
-  //       bibles.data.forEach((version) => {
-  //         if (version.language.name === "Spanish") {
-  //           spanishVersionsArr.push(version.name)
-  //         }
-  //       })
-  //       setSpanishVersions(spanishVersionsArr)
-        
-  //       const englishVersionsArr = []
-  //       bibles.data.forEach((version) => {
-  //         if (version.language.name === "English") {
-  //           englishVersionsArr.push(version.name)
-  //         }
-  //       })
-  //       setEnglishVersions(englishVersionsArr)
-  //     })   
-  // }, [])
+      // }else if (infoFinder.includes("-")) {
+      //   const regExpBook = new RegExp(/[A-Za-z]+/)
+      //   const regExpChapter = new RegExp(/[0-9]+:/)
+      //   const regExpVerse = new RegExp(/:[0-9]+-[0-9]+/)
+
+      //   const book = infoFinder.match(regExpBook)[0]
+      //   const chapter = infoFinder.match(regExpChapter)[0].slice(0, -1)
+      //   const verses = infoFinder.match(regExpVerse)[0].slice(1)
+
+      //   if (book !== undefined && chapter !== undefined && verses !== undefined) {
+      //     // axios.get(`https://bible-go-api.rkeplin.com/v1/books/${bookId}/chapters/${chapter}/verse/${verse}`)
+      //     // axios.get(`https://bible-go-api.rkeplin.com/v1/books/${bookId}/chapters/${chapter}`)
+      //     // axios.get(`https://bible-api.com/${book} ${chapter}:${verses}?translation=kjv`)
+      //     axios.get(`https://bolls.life/get-text/kjv/${book}/${chapter}/`)
+      //     .then(res => {
+      //       const chapter = res.data
+      //       console.log(chapter)
+      //       setChapterInfo(chapter)
+      //     })
+      //     .catch((error) => {
+      //       console.log("error sended:", error.res)
+      //       setError(error)
+      //     })
+      //   }else{
+      //     setChapterInfo(["Mislead information, please try again"])
+      //   }
+
+      // }else{
+      //}
