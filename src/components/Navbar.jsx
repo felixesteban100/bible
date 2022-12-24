@@ -1,16 +1,9 @@
-import React , {useEffect} from 'react'
+import React from 'react'
 import '../App.css'
 import 'animate.css';
-import axios from 'axios';
 
-function Navbar({ infoFinder, setInfoFinder, find}) {
+function Navbar({allVersionsBySelectedLanguage, selectedLanguage, changeLanguage, changeVersion, selectedVersion, infoFinder, setInfoFinder, find}) {
     
-    useEffect(() => {  
-        axios.get('https://bolls.life/static/bolls/app/views/languages.json')
-        // .then(data => console.log(data.data))
-    }, [])
-
-
     return (
         <div>
             <div className='navbar-container'>
@@ -26,16 +19,30 @@ function Navbar({ infoFinder, setInfoFinder, find}) {
                     </button>
                 </div>
                 <div className='select-version-container'>
-                    {/* <select value={seletedVersion} className="select-version" id="select-version" onChange={(event) => selectVersion(event)}>
+                    <div className='select-language'>
+                        <div className={selectedLanguage.current === "Español Spanish" ? "language-selected" : "language"} onClick={() => changeLanguage("Español Spanish")}>
+                            <p>Spanish</p>
+                        </div>
+                        <div className={selectedLanguage.current === "English" ? "language-selected" : "language"}  onClick={() => changeLanguage("English")}>
+                            <p>English</p>
+                        </div>
+                        <div className={selectedLanguage.current === "All" ? "language-selected" : "language"} onClick={() => changeLanguage("All")}>
+                            <p>All</p>
+                        </div>
+                    </div>
+                    
+                    <select value={selectedVersion.current} className="select-version" onChange={(event) => changeVersion(event)}>
                         {
-                            selectedLanguage === "All" &&
-                            allVersions.map((current, index) => {
+                            allVersionsBySelectedLanguage.map((current, index) => {
                                 return(
-                                    <option key={index} value={current}>{current}</option>
+                                    <option key={index} value={current.short_name}>
+                                        {/* <p className='version-name'>{current.full_name}</p> */}
+                                        {current.full_name}
+                                    </option>
                                 )
                             })
                         }
-                    </select> */}
+                    </select>
                 </div>
             </div>
         </div>
@@ -43,3 +50,14 @@ function Navbar({ infoFinder, setInfoFinder, find}) {
 }
 
 export default Navbar
+
+
+{/* <select value={selectedLanguage} className="select-language" onChange={(event) => changeLanguage(event)}>
+                        {
+                            allVersionsByLanguage.map((current, index) => {
+                                return(
+                                    <option key={index} value={current.language}>{current.language}</option>
+                                )
+                            })
+                        }
+                    </select> */}
