@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
+import { useQuery } from 'react-query'
 import './App.css'
 import axios from 'axios';
 import Header from './components/Header'
@@ -7,7 +8,6 @@ import Error from './components/Error';
 import Loading from './components/Loading';
 import Footer from './components/Footer';
 import VerseOfDay from './components/VerseOfDay';
-import { useRef } from 'react';
 import 'animate.css';
 
 function App() {
@@ -17,67 +17,116 @@ function App() {
   const [theme, setTheme] = useState(true)
 
   const [infoFinder, setInfoFinder] = useState("")
-  const [verseofday, setVerseofday] = useState(true)
-  const [translate, setTranslate] = useState(true)
+  
+  const [fontSize, setFontSize] = useState('2rem') // large larger medium small smaller x-large x-small xx-large xx-small
+  const [selectColor, setSelectColor] = useState('green')
 
-  const [allVersionsByLanguage, setAllVersionsByLanguage] = useState([])
-  const [allVersionsBySelectedLanguage, setAllVersionsBySelectedLanguage] = useState([])
-  const [allVersions, setAllVersions] = useState([])
-  const [allBooksByVersions, setAllBooksByVersions] = useState([])
-
-  // const [selectedLanguage, setSelectedLanguage] = useState('Español Spanish')
-  // const [selectedVersion, setSelectedVersion] = useState("RV1960")
-  // const [selectedBookName, setSelectedBookName] = useState('')
-  // const [selectedBookId, setSelectedBookId] = useState()
-  // const [selectedChapter, setSelectedChapter] = useState('')
-
-  const selectedLanguage = useRef('Español Spanish')
-  const selectedVersion = useRef("RV1960")
+  const selectedVersion = useRef("NASB") //RV1960
   const selectedBookName = useRef('')
-  const selectedBookId = useRef()
+  const selectedBookId = useRef(1)
   const selectedChapter = useRef('')
 
   const [chapterInfo, setChapterInfo] = useState([])
 
-  useEffect(() => {
-    setTheme((localStorage.getItem("theme") === "true"))
-    
-    if (localStorage.getItem("selectedLanguage") !== undefined && localStorage.getItem("selectedLanguage") !== null) {
-      selectedLanguage.current = localStorage.getItem("selectedLanguage")
+  const [allBooksByVersionsSelected, setAllBooksByVersionSelected] = useState([])
+  const allChapterBookSelected = useRef([])
+
+  const [alReadyLoaded, setAlReadyLoaded] = useState(false)
+
+  // const {isLoading: isLoading1, error: error1, data: allVersionsByLanguage} = useQuery('allVersionsByLanguage', () => {
+  //   return axios.get('https://bolls.life/static/bolls/app/views/languages.json')
+  //   .then(data => data.data)
+  // })
+
+  /* const {isLoading: isLoading2, error: error2, data: allVersionsBySelectedLanguage, refetch: refetchallVersionsBySelectedLanguage} = useQuery('allVersionsBySelectedLanguage', async () => {
+    let translations 
+    if (selectedLanguage.current !== "All") {
+      translations = await axios.get('https://bolls.life/static/bolls/app/views/languages.json')
+      // .then(data => data.data.filter((currentVersion) => currentVersion.language === selectedLanguage.current))[0].translations
+      .then(data => data.data.filter((currentVersion) => currentVersion.language === selectedLanguage.current)[0].translations)
+    }else{
+      translations = await axios.get('https://bolls.life/static/bolls/app/views/languages.json')
+      .then(data => {
+        let arr = []
+        data.data.map(currentVersion => arr.push(...currentVersion.translations))
+        return arr
+      })
     }
-    if (localStorage.getItem("selectedVersion") !== undefined && localStorage.getItem("selectedLanguage") !== null) {
+    return translations
+  }) */
+
+  const {isLoading: isLoading2, error: error2, data: allVersionsBySelectedLanguage} = useQuery('allVersionsBySelectedLanguage', async () => {
+    return await axios.get('https://bolls.life/static/bolls/app/views/languages.json')
+      .then(data => {
+        let arr = []
+        data.data.map(currentVersion => arr.push(...currentVersion.translations))
+        return arr
+      })
+  })
+
+  const {isLoading: isLoading3, error: error3, data: allVersions} = useQuery('allVersions', () => {
+    return axios.get(`https://bolls.life/static/bolls/app/views/translations_books.json`)
+    .then(res => res.data)
+  })
+
+  const {isLoading: isLoading4, error: error4, data: allBooksByVersions} = useQuery('allBooksByVersions', async () => {
+    
+    let result = await axios.get('https://bolls.life/static/bolls/app/views/languages.json')
+    .then(res => {
+      let names = []
+      res.data.map(element => {
+        element.translations.map((current) => {
+          names.push(current.short_name)
+        })
+      })
+      return names
+    }) // short_names
+    .then(async (names) => {
+      let result = names.map(async (name) => {
+        let promiseData = await axios.get(`https://bolls.life/get-books/${name}/`)
+        .then(res => {
+          return {"name": name, "data": res.data}
+        })
+        return promiseData
+      })
+      return Promise.all(result)
+      .then(res => res)
+    })// short_names with data(allBooks)
+
+    changeBooksList(result)
+
+    return result
+  }) // this has a delay i think
+
+
+  if (alReadyLoaded === false) {
+    setAlReadyLoaded(true)
+    setTheme((localStorage.getItem("theme") === "true"))
+    // if (localStorage.getItem("selectedLanguage") !== undefined && localStorage.getItem("selectedLanguage") !== null) {
+    //   selectedLanguage.current = localStorage.getItem("selectedLanguage")
+    // }
+    if (localStorage.getItem("selectedVersion") !== undefined && localStorage.getItem("selectedVersion") !== null) {
       selectedVersion.current = localStorage.getItem("selectedVersion")
     }
 
-    axios.get('https://bolls.life/static/bolls/app/views/languages.json')
-    .then(data => {
-      setAllVersionsByLanguage(data.data)
-      setAllVersionsBySelectedLanguage(data.data.filter((current) => current.language === selectedLanguage.current)[0].translations)
-    })
-    .catch(err => setError(err))
+    if (localStorage.getItem("fontSize") !== null && localStorage.getItem("fontSize") !== undefined) {
+      setFontSize(localStorage.getItem("fontSize"))
+    }
 
-    axios.get(`https://bolls.life/static/bolls/app/views/translations_books.json`)
-    .then(res => setAllVersions(res.data))
-    .catch(err => setError(err))    
-  }, [])
+    if (localStorage.getItem("selectColor") !== null && localStorage.getItem("selectColor") !== undefined) {
+      setSelectColor(localStorage.getItem("selectColor"))
+    }
 
-  useEffect(() => {
-    allVersionsByLanguage.forEach(element => {
-      element.translations.map((current) => {
-        axios.get(`https://bolls.life/get-books/${current.short_name}/`)
-        .then(res => {
-          let other = {
-            "name": current.short_name,
-            "data": res.data
-          }
-          setAllBooksByVersions(prev => [...prev, other])
-        })
-        .catch(err => setError(err))
-      })
-    });
-    
-  }, [allVersionsByLanguage])
+    if (localStorage.getItem("selectedBookName") !== null && localStorage.getItem("selectedBookName") !== undefined) {
+      selectedBookName.current = localStorage.getItem("selectedBookName")
+    }
 
+    if (localStorage.getItem("selectedChapter") !== null && localStorage.getItem("selectedChapter") !== undefined) {
+      selectedChapter.current = parseInt(localStorage.getItem("selectedChapter"))
+    }
+
+    findSelected("none", "none")
+  }
 
   function quitarAcentos(cadena){
     const acentos = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
@@ -87,7 +136,7 @@ function App() {
   function highlightText(verse){
     let selectedVerses = localStorage.getItem('selectedVerses') !== null ? JSON.parse(localStorage.getItem('selectedVerses')) : []
 
-    let sended = {"verse": verse, "bookName": selectedBookName.current, "chapter": selectedChapter.current, "bookId": selectedBookId.current}
+    let sended = {"verse": parseInt(verse), "bookName": selectedBookName.current, "chapter": parseInt(selectedChapter.current), "bookId": parseInt(selectedBookId.current)}
     let isAlReady = false
     
     selectedVerses.forEach(current => {
@@ -116,8 +165,8 @@ function App() {
         currentVerse.selected = "No"
         selectedVerses.map((currentSelected) => {
           if (currentSelected.bookName === selectedBookName.current 
-            && currentSelected.chapter === selectedChapter.current 
-            && currentSelected.verse === currentVerse.verse) {
+            && parseInt(currentSelected.chapter) === parseInt(selectedChapter.current) 
+            && parseInt(currentSelected.verse) === parseInt(currentVerse.verse)) {
               currentVerse.selected = "Yes"
           }
         })
@@ -134,7 +183,7 @@ function App() {
   }
 
   function find(){
-    setVerseofday(false)
+    // setVerseofday(false)
     setError(undefined)
     setLoading(true)
     setChapterInfo([])
@@ -173,24 +222,53 @@ function App() {
     selectedBookId.current = localselectedBookId
     selectedChapter.current = localselectedChapter
 
-    setInfoFinder("")
+    // setInfoFinder("")
   }
 
-  function readFull(bookId, chapter, nameofverse){
-    setLoading(true)
-    selectedBookId.current = bookId
-    selectedChapter.current = chapter
-    selectedBookName.current = nameofverse
-    
-    getTheData(selectedVersion.current, bookId, chapter)
-  }
-
-  function changeTranslation(){
-    setVerseofday(false)
+  function findSelected(event, which){
     setError(undefined)
     setLoading(true)
     setChapterInfo([])
-    setTranslate(true)
+
+    switch(which){
+      case "version":
+        // setSelectedVersion(event.target.value)
+        selectedVersion.current = event.target.value
+        if (selectedBookId.current !== undefined && selectedChapter.current !== undefined) {
+          changeTranslation()
+        }
+        // setTranslate(true)
+        localStorage.setItem("selectedVersion", event.target.value)
+        changeBooksList(allBooksByVersions)
+      break;
+
+      case "book":
+        selectedBookName.current = event.target.value
+        selectedChapter.current = 1
+        localStorage.setItem("selectedBookName", event.target.value)
+        localStorage.setItem("selectedChapter", 1)
+      break;
+
+      case "chapter":
+        selectedChapter.current = event.target.value
+        localStorage.setItem("selectedChapter", event.target.value)
+        // selectedBookId.current = event.target.key
+      break;
+
+      default:
+      break;
+    }
+
+    getTheData(selectedVersion.current, selectedBookId.current, selectedChapter.current)
+
+  }
+
+  function changeTranslation(){
+    // setVerseofday(false)
+    setError(undefined)
+    setLoading(true)
+    setChapterInfo([])
+    // setTranslate(true)
 
     getTheData(selectedVersion.current, selectedBookId.current, selectedChapter.current)
 
@@ -206,62 +284,6 @@ function App() {
     })    
   }
 
-  function changeVersion(event){
-    // setSelectedVersion(event.target.value)
-    selectedVersion.current = event.target.value
-    if (selectedBookId.current !== undefined && selectedChapter.current !== undefined) {
-      changeTranslation()
-    }
-    setTranslate(true)
-    localStorage.setItem("selectedVersion", event.target.value)
-  }
-
-  function changeLanguage(language){
-    // setSelectedLanguage(language)
-    selectedLanguage.current = language
-    setTranslate(true)
-
-    let seleted 
-    if (language !== "All") {
-      seleted = allVersionsByLanguage.filter((current) => current.language === language)
-      setAllVersionsBySelectedLanguage(seleted[0].translations)
-    }else{
-      let alltranslations = []
-      allVersionsByLanguage.forEach(element => {
-        alltranslations.push(...element.translations)
-      });
-      setAllVersionsBySelectedLanguage(alltranslations)
-    }
-
-    switch (language) {
-      case "All":
-        // setSelectedVersion(prev => prev)
-      break;
-
-      case "Español Spanish":
-        // setSelectedVersion("RV1960")
-        selectedVersion.current = "RV1960"
-        if (selectedBookId.current !== undefined && selectedChapter.current !== undefined) {
-          changeTranslation()
-        }
-      break;
-
-      case "English":
-        // setSelectedVersion("NASB")
-        selectedVersion.current = "NASB"
-        if (selectedBookId.current !== undefined && selectedChapter.current !== undefined) {
-          changeTranslation()
-        }
-      break;
-    
-      default:
-        
-      break;
-    }
-    localStorage.setItem("selectedLanguage", selectedLanguage.current)
-    localStorage.setItem("selectedVersion", selectedVersion.current)
-  }
-
   function changeChapter(where){
     setError(undefined)
     setLoading(true)
@@ -269,9 +291,9 @@ function App() {
     switch (where) {
       case "previous":
         selectedBookId.current = selectedBookId.current
-        selectedChapter.current = selectedChapter.current - 1
+        selectedChapter.current = parseInt(selectedChapter.current) - 1
 
-        if (selectedChapter.current === 0) {
+        if (parseInt(selectedChapter.current) === 0) {
           selectedBookId.current = selectedBookId.current - 1
           allBooksByVersions.forEach((currentversion) => {
             if (currentversion.name === selectedVersion.current) {
@@ -290,7 +312,7 @@ function App() {
 
       case "next":
         selectedBookId.current = selectedBookId.current
-        selectedChapter.current = selectedChapter.current + 1
+        selectedChapter.current = parseInt(selectedChapter.current) + 1
 
         let howManyChaptersHave
         allBooksByVersions.forEach((currentversion) => {
@@ -303,7 +325,7 @@ function App() {
           }
         })
 
-        if (selectedChapter.current > howManyChaptersHave) {
+        if (parseInt(selectedChapter.current) > howManyChaptersHave) {
           selectedBookId.current = selectedBookId.current + 1
           selectedChapter.current = 1
 
@@ -326,9 +348,48 @@ function App() {
     }
   }
 
+  function changeBooksList(data){
+    data.map((current) => {
+      if (current.name === selectedVersion.current) {
+        setAllBooksByVersionSelected(current.data)
+        current.data.map((current, index) => {
+          if (index === selectedBookId.current) {
+            allChapterBookSelected.current = []
+            for (let i = 1; i < current.chapters + 1; i++) {
+              allChapterBookSelected.current = [...allChapterBookSelected.current, i]
+            }
+          }
+        })
+      }
+    })
+
+    console.log(allChapterBookSelected)
+
+
+  }
+
   function changeTheme(){
     setTheme(prev => !prev)
     localStorage.setItem("theme", !theme)
+  }
+
+  function changeFontSize(event){
+    setFontSize(event.target.value)
+    localStorage.setItem("fontSize", event.target.value)
+  }
+
+  function changeColor(event){
+    setSelectColor(event.target.value)
+    localStorage.setItem("selectColor", event.target.value)
+  }
+
+  const selectedStyleForText = {
+    backgroundColor: `${selectColor}`,
+    fontSize: `${fontSize}`
+  }
+
+  const notSelectedStyleForText = {
+    fontSize: `${fontSize}`
   }
 
   return (
@@ -337,42 +398,42 @@ function App() {
         theme={theme}
         changeTheme={changeTheme}
       />
-      <Navbar
-        infoFinder={infoFinder}
-        setInfoFinder={setInfoFinder}
-        find={find}
-        selectedVersion={selectedVersion}
-        changeVersion={changeVersion}
-        selectedLanguage={selectedLanguage}
-        changeLanguage={changeLanguage}
-        allVersionsBySelectedLanguage={allVersionsBySelectedLanguage}
-      />
+      {
+        (allBooksByVersions) ? 
+        <Navbar
+          infoFinder={infoFinder}
+          setInfoFinder={setInfoFinder}
+          find={find}
+          selectedVersion={selectedVersion}
+          allVersionsBySelectedLanguage={allVersionsBySelectedLanguage}
+          changeFontSize={changeFontSize}
+          changeColor={changeColor}
+          selectColor={selectColor}
+          fontSize={fontSize}
+          selectedBookName={selectedBookName}
+          selectedChapter={selectedChapter}
+          allBooksByVersionsSelected={allBooksByVersionsSelected}
+          allChapterBookSelected={allChapterBookSelected}
+          findSelected={findSelected}
+        />
+        :
+        null
+      }   
       <div className="app-content">
         <div>
           {
-            loading &&
+            (loading || /* isLoading1 || */ isLoading2 ||isLoading3 ||isLoading4) ?
             <Loading/>
+            :
+            null
           }
           {
-            error !== undefined &&
+            (error !== undefined || /* error1 || */ error2 || error3 || error4) ?
             <Error
               hasErrors={error.message}
             />
-          }
-          {
-            (verseofday && error === undefined && loading === false && chapterInfo.length === 0 && allVersions !== undefined && allVersions.length !== 0) ?
-              <VerseOfDay
-                allVersions={allVersions}
-                setLoading={setLoading}
-                setError={setError}
-                selectedVersion={selectedVersion}
-                allVersionsByLanguage={allVersionsByLanguage}
-                translate={translate}
-                setTranslate={setTranslate}
-                readFull={readFull}
-              />
-              :
-              null
+            :
+            null
           }
           {
             (loading === false && chapterInfo.length !== 0) && 
@@ -381,8 +442,6 @@ function App() {
               <p className='content-translation'>{selectedVersion.current}</p>
               <br />
               <div className='controlers-container'>
-                {/* <button className='previous-chapter' onClick={() => changeChapter("previous")}>{selectedBookName.current} {parseInt(selectedChapter.current) - 1}</button>
-                <button className='next-chapter' onClick={() => changeChapter("next")}>{selectedBookName.current} {parseInt(selectedChapter.current) + 1}</button> */}
                 <button className='controller-chapter' onClick={() => changeChapter("previous")}>Previous Chapter</button>
                 <button className='controller-chapter' onClick={() => changeChapter("next")}>Next Chapter</button>
               </div>
@@ -392,10 +451,9 @@ function App() {
                   return(
                     <p key={index} className="content-verse" >
                       <span className='content-verse-number'>{current.verse} </span> 
-                      {/* <span>{current.text}</span>  */}
                       <span 
-                        // className={!selectedVerses.includes({"verse": current.verse, "bookName": selectedBookName, "chapter": selectedChapter}) ? "verse" : "verse-selected"} 
                         className={current.selected === "No" ? "verse" : "verse-selected"} 
+                        style={current.selected === "No" ? notSelectedStyleForText : selectedStyleForText}
                         dangerouslySetInnerHTML={{ __html: current.text }} 
                         onClick={() => highlightText(current.verse)}/>
                     </p>
@@ -409,7 +467,6 @@ function App() {
               </div>
             </div>
           }
-          
         </div>
         <Footer />
       </div>

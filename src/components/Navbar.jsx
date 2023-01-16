@@ -2,8 +2,7 @@ import React from 'react'
 import '../App.css'
 import 'animate.css';
 
-function Navbar({allVersionsBySelectedLanguage, selectedLanguage, changeLanguage, changeVersion, selectedVersion, infoFinder, setInfoFinder, find}) {
-    
+function Navbar({allVersionsBySelectedLanguage, selectedVersion, infoFinder, setInfoFinder, find, changeFontSize, changeColor, selectColor, fontSize, selectedBookName, selectedChapter, allBooksByVersionsSelected, allChapterBookSelected, findSelected}) {
     return (
         <div>
             <div className='navbar-container'>
@@ -19,29 +18,59 @@ function Navbar({allVersionsBySelectedLanguage, selectedLanguage, changeLanguage
                     </button>
                 </div>
                 <div className='select-version-container'>
-                    <div className='select-language'>
-                        <div className={selectedLanguage.current === "Español Spanish" ? "language-selected" : "language"} onClick={() => changeLanguage("Español Spanish")}>
-                            <p>Spanish</p>
-                        </div>
-                        <div className={selectedLanguage.current === "English" ? "language-selected" : "language"}  onClick={() => changeLanguage("English")}>
-                            <p>English</p>
-                        </div>
-                        <div className={selectedLanguage.current === "All" ? "language-selected" : "language"} onClick={() => changeLanguage("All")}>
-                            <p>All</p>
-                        </div>
-                    </div>
-                    
-                    <select value={selectedVersion.current} className="select-version" onChange={(event) => changeVersion(event)}>
+                    <select value={selectedVersion.current} className="select-version" onChange={(event) => findSelected(event, "version")}>
                         {
                             allVersionsBySelectedLanguage.map((current, index) => {
                                 return(
                                     <option key={index} value={current.short_name}>
-                                        {/* <p className='version-name'>{current.full_name}</p> */}
                                         {current.full_name}
                                     </option>
                                 )
                             })
                         }
+                    </select>
+                </div>
+                <div className='select-chapter-container'>
+                    <select className='select-book' onChange={(event) => findSelected(event, "book")} value={selectedBookName.current}>
+                        {
+                            allBooksByVersionsSelected.map((current, index) => {
+                                return(
+                                    <option value={current.name} key={index}>{current.name}</option>
+                                )
+                            })
+                        }
+                    </select>
+                    <select className='select-chapter' onChange={(event) => findSelected(event, "chapter")} value={selectedChapter.current}>
+                        {
+                            allChapterBookSelected.current.map((current, index) => {
+                                return(
+                                    <option value={current} key={index}>{current}</option>
+                                )
+                            })
+                        }
+                    </select>
+                </div>
+                <div className='select-fontSize-container'>
+                    <select className='select-fontSize' name="" id="" onChange={event => changeFontSize(event)} value={fontSize}>
+                        <option value="4rem">4rem</option>
+                        <option value="2rem">2rem</option>
+                        <option value="large">Large</option>
+                        <option value="larger">Larger</option>
+                        <option value="medium">Medium</option>
+                        <option value="small">Small</option>
+                        <option value="smaller">Smaller</option>
+                        <option value="x-large">X-large</option>
+                        <option value="x-small">X-small</option>
+                        <option value="xx-large">XX-large</option>
+                        <option value="xx-small">XX-small</option>
+                    </select>
+                    <select className='select-colorSelected' name="" id="" onChange={event => changeColor(event)} value={selectColor}>
+                        <option value="green">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="red">Red</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="pink">Pink</option>
+                        <option value="brown">Brown</option>
                     </select>
                 </div>
             </div>
