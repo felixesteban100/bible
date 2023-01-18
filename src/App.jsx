@@ -7,7 +7,7 @@ import Navbar from './components/Navbar'
 import Error from './components/Error';
 import Loading from './components/Loading';
 import Footer from './components/Footer';
-import VerseOfDay from './components/VerseOfDay';
+// import VerseOfDay from './components/VerseOfDay';
 import 'animate.css';
 
 function App() {
@@ -98,13 +98,9 @@ function App() {
     return result
   }) // this has a delay i think
 
-
   if (alReadyLoaded === false) {
     setAlReadyLoaded(true)
     setTheme((localStorage.getItem("theme") === "true"))
-    // if (localStorage.getItem("selectedLanguage") !== undefined && localStorage.getItem("selectedLanguage") !== null) {
-    //   selectedLanguage.current = localStorage.getItem("selectedLanguage")
-    // }
     if (localStorage.getItem("selectedVersion") !== undefined && localStorage.getItem("selectedVersion") !== null) {
       selectedVersion.current = localStorage.getItem("selectedVersion")
     }
@@ -222,6 +218,8 @@ function App() {
     selectedBookId.current = localselectedBookId
     selectedChapter.current = localselectedChapter
 
+    localStorage.setItem("selectedBookName", selectedBookName.current)
+    localStorage.setItem("selectedChapter", localselectedChapter)
     // setInfoFinder("")
   }
 
@@ -238,29 +236,60 @@ function App() {
           changeTranslation()
         }
         // setTranslate(true)
-        localStorage.setItem("selectedVersion", event.target.value)
         changeBooksList(allBooksByVersions)
       break;
 
       case "book":
         selectedBookName.current = event.target.value
+        allBooksByVersionsSelected.forEach((current, index) => {
+          if (current.name === event.target.value) {
+            selectedBookId.current = index + 1
+          }
+        })
         selectedChapter.current = 1
-        localStorage.setItem("selectedBookName", event.target.value)
-        localStorage.setItem("selectedChapter", 1)
+        changeBooksList(allBooksByVersions)
       break;
 
       case "chapter":
         selectedChapter.current = event.target.value
-        localStorage.setItem("selectedChapter", event.target.value)
-        // selectedBookId.current = event.target.key
       break;
 
       default:
       break;
     }
 
-    getTheData(selectedVersion.current, selectedBookId.current, selectedChapter.current)
+    if (event !== "None") {
+      getTheData(selectedVersion.current, selectedBookId.current, selectedChapter.current)
+      saveData(which)
+    }
+  }
 
+  function saveData(which){
+    switch(which){
+      case "version":
+        localStorage.setItem("selectedVersion", selectedVersion.current)
+      break;
+
+      case "book":
+        localStorage.setItem("selectedBookName", selectedBookName.current)
+        localStorage.setItem("selectedChapter", 1)
+        localStorage.setItem("selectedBookId", selectedBookId.current)
+
+      break;
+
+      case "chapter":
+        localStorage.setItem("selectedChapter", selectedChapter.current)
+      break;
+
+      case "controllers":
+        localStorage.setItem("selectedBookName", selectedBookName.current)
+        localStorage.setItem("selectedChapter", selectedChapter.current)
+        localStorage.setItem("selectedBookId", selectedBookId.current)
+      break;
+
+      default:
+      break;
+    }
   }
 
   function changeTranslation(){
@@ -292,6 +321,8 @@ function App() {
       case "previous":
         selectedBookId.current = selectedBookId.current
         selectedChapter.current = parseInt(selectedChapter.current) - 1
+
+        console.log(selectedBookId.current)
 
         if (parseInt(selectedChapter.current) === 0) {
           selectedBookId.current = selectedBookId.current - 1
@@ -346,6 +377,8 @@ function App() {
       default:
       break;
     }
+
+    saveData("controllers")
   }
 
   function changeBooksList(data){
@@ -353,7 +386,7 @@ function App() {
       if (current.name === selectedVersion.current) {
         setAllBooksByVersionSelected(current.data)
         current.data.map((current, index) => {
-          if (index === selectedBookId.current) {
+          if (index + 1 === selectedBookId.current) {
             allChapterBookSelected.current = []
             for (let i = 1; i < current.chapters + 1; i++) {
               allChapterBookSelected.current = [...allChapterBookSelected.current, i]
@@ -362,10 +395,6 @@ function App() {
         })
       }
     })
-
-    console.log(allChapterBookSelected)
-
-
   }
 
   function changeTheme(){
@@ -442,7 +471,10 @@ function App() {
               <p className='content-translation'>{selectedVersion.current}</p>
               <br />
               <div className='controlers-container'>
-                <button className='controller-chapter' onClick={() => changeChapter("previous")}>Previous Chapter</button>
+                {/* <button className='controller-chapter' onClick={() => changeChapter("previous")}>{parseInt(selectedChapter.current - 1) === 0 ? allBooksByVersionsSelected[selectedBookId.current - 2].name : selectedBookName.current} {parseInt(selectedChapter.current - 1) === 0 ? allBooksByVersionsSelected[selectedBookId.current - 2].chapters : selectedChapter.current - 1}</button> */}
+                {/* <button className='controller-chapter' onClick={() => changeChapter("next")}>{selectedBookName.current} {selectedChapter.current + 1}</button> */}
+                
+                <button className='controller-chapter' onClick={() => changeChapter("previous")}>Previous Chapter</button>  
                 <button className='controller-chapter' onClick={() => changeChapter("next")}>Next Chapter</button>
               </div>
               <br />

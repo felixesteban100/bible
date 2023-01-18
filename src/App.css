@@ -417,7 +417,7 @@
   /* background-color: var(--content-background); */
   text-align: justify;
   margin: 0 auto;
-  width: 70vw;
+  width: 80vw;
 }
 .content-title{
   font-size: 3rem;
@@ -540,6 +540,11 @@
 }
 
 @media (max-width: 500px) {
+
+  .navbar-container{
+    grid-template-columns: repeat(1 , 90%);
+    /* gap: 1rem; */
+  }
 
   .select-language{
     gap: 5rem;
