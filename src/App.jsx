@@ -121,6 +121,10 @@ function App() {
       selectedChapter.current = parseInt(localStorage.getItem("selectedChapter"))
     }
 
+    if (localStorage.getItem("selectedBookId") !== null && localStorage.getItem("selectedBookId") !== undefined) {
+      selectedBookId.current = parseInt(localStorage.getItem("selectedBookId"))
+    }
+
     findSelected("none", "none")
   }
 
@@ -172,10 +176,10 @@ function App() {
       setLoading(false)
       setError(undefined)
     })
-    .catch(error => {
-      setLoading(false)
-      setError(error)
-    })
+    // .catch(error => {
+    //   setLoading(false)
+    //   setError(error)
+    // })
   }
 
   function find(){
@@ -268,7 +272,9 @@ function App() {
     switch(which){
       case "version":
         localStorage.setItem("selectedVersion", selectedVersion.current)
-      break;
+        localStorage.setItem("selectedBookName", selectedBookName.current)
+        
+        break;
 
       case "book":
         localStorage.setItem("selectedBookName", selectedBookName.current)

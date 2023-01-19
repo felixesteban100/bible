@@ -118,12 +118,15 @@
   --header-button-color-hover: rgb(238, 223, 112);
   --header-button-background-hover: white;
   
-  --navbar-backgroundColor: rgba(30, 30, 31, 0);
+  --navbar-backgroundColor: rgba(236, 231, 132, 0);
   --navbar--text-color: rgb(0, 0, 0);
-  --inputFinder-background:  rgb(158, 158, 158);
-  --buttonFinder-background: rgb(158, 158, 158);
+  /* --inputFinder-background:  rgb(158, 158, 158); */
+  --inputFinder-background:  rgb(236, 229, 155);
+  /* --buttonFinder-background: rgb(158, 158, 158); */
+  --buttonFinder-background: rgb(236, 229, 155);
   --buttonFinder-background-hover: rgb(238, 223, 112);
-  --select-version-background: rgb(158, 158, 158);
+  /* --select-version-background: rgb(158, 158, 158); */
+  --select-version-background: rgb(236, 229, 155);
   --select-language-color: rgb(0, 0, 0);
 
   --verseofday-container-background: rgb(255, 255, 255);
@@ -284,36 +287,35 @@
   background-color: var(--select-version-background);
   padding-left: 1rem;
   border-radius: 0.5rem;
+  border: none;
 }
 .version-name{
   color: black;
 }
-.select-language{
+/* .select-language{
   font-size: 1rem;
   height: 50%;
   width: 100%;
-  /* background-color: var(--select-version-background); */
-  /* padding-left: 1rem; */
   border-radius: 0.5rem;
   display: flex;
   gap: 1rem;
   justify-content: center;
   align-items: center;
   margin-top: 1rem;
-}
-.language{
+} */
+/* .language{
   color: var(--select-language-color);
   cursor: pointer;
   padding-bottom: 0.2rem;
   height: 2rem;
-}
-.language-selected{
+} */
+/* .language-selected{
   color: var(--select-language-color);
   border-bottom: 0.2rem solid var(--select-language-color);
   cursor: pointer;
   height: 2rem;
   padding-bottom: 0.2rem;
-}
+} */
 
 .select-chapter-container{
   height: fit-content;
@@ -330,6 +332,7 @@
   background-color: var(--inputFinder-background);
   border-radius: 0.5rem;
   padding: 0.2rem;
+  border: none;
 }
 
 .select-chapter{
@@ -338,6 +341,7 @@
   background-color: var(--inputFinder-background);
   border-radius: 0.5rem;
   padding: 0.2rem;
+  border: none;
 }
 
 .select-fontSize-container{
@@ -355,6 +359,7 @@
   background-color: var(--inputFinder-background);
   border-radius: 0.5rem;
   padding: 0.2rem;
+  border: none;
 }
 
 .select-colorSelected{
@@ -363,6 +368,7 @@
   background-color: var(--inputFinder-background);
   border-radius: 0.5rem;
   padding: 0.2rem;
+  border: none;
 }
 /* NAVBAR */
 
