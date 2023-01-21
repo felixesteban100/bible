@@ -22,9 +22,9 @@ function App() {
   const [selectColor, setSelectColor] = useState('green')
 
   const selectedVersion = useRef("NASB") //RV1960
-  const selectedBookName = useRef('')
+  const selectedBookName = useRef('Genesis')
   const selectedBookId = useRef(1)
-  const selectedChapter = useRef('')
+  const selectedChapter = useRef(1)
 
   const [chapterInfo, setChapterInfo] = useState([])
 
