@@ -100,29 +100,29 @@ function App() {
 
   if (alReadyLoaded === false) {
     setAlReadyLoaded(true)
-    setTheme((localStorage.getItem("theme") === "true"))
-    if (localStorage.getItem("selectedVersion") !== undefined && localStorage.getItem("selectedVersion") !== null) {
-      selectedVersion.current = localStorage.getItem("selectedVersion")
+    setTheme((localStorage.getItem("theme_bibleApp") === "true"))
+    if (localStorage.getItem("selectedVersion_bibleApp") !== undefined && localStorage.getItem("selectedVersion_bibleApp") !== null) {
+      selectedVersion.current = localStorage.getItem("selectedVersion_bibleApp")
     }
 
-    if (localStorage.getItem("fontSize") !== null && localStorage.getItem("fontSize") !== undefined) {
+    if (localStorage.getItem("fontSize_bibleApp") !== null && localStorage.getItem("fontSize_bibleApp") !== undefined) {
       setFontSize(localStorage.getItem("fontSize"))
     }
 
-    if (localStorage.getItem("selectColor") !== null && localStorage.getItem("selectColor") !== undefined) {
-      setSelectColor(localStorage.getItem("selectColor"))
+    if (localStorage.getItem("selectColor_bibleApp") !== null && localStorage.getItem("selectColor_bibleApp") !== undefined) {
+      setSelectColor(localStorage.getItem("selectColor_bibleApp"))
     }
 
-    if (localStorage.getItem("selectedBookName") !== null && localStorage.getItem("selectedBookName") !== undefined) {
-      selectedBookName.current = localStorage.getItem("selectedBookName")
+    if (localStorage.getItem("selectedBookName_bibleApp") !== null && localStorage.getItem("selectedBookName_bibleApp") !== undefined) {
+      selectedBookName.current = localStorage.getItem("selectedBookName_bibleApp")
     }
 
-    if (localStorage.getItem("selectedChapter") !== null && localStorage.getItem("selectedChapter") !== undefined) {
-      selectedChapter.current = parseInt(localStorage.getItem("selectedChapter"))
+    if (localStorage.getItem("selectedChapter_bibleApp") !== null && localStorage.getItem("selectedChapter_bibleApp") !== undefined) {
+      selectedChapter.current = parseInt(localStorage.getItem("selectedChapter_bibleApp"))
     }
 
-    if (localStorage.getItem("selectedBookId") !== null && localStorage.getItem("selectedBookId") !== undefined) {
-      selectedBookId.current = parseInt(localStorage.getItem("selectedBookId"))
+    if (localStorage.getItem("selectedBookId_bibleApp") !== null && localStorage.getItem("selectedBookId_bibleApp") !== undefined) {
+      selectedBookId.current = parseInt(localStorage.getItem("selectedBookId_bibleApp"))
     }
 
     findSelected("none", "none")
@@ -134,7 +134,7 @@ function App() {
   }
 
   function highlightText(verse){
-    let selectedVerses = localStorage.getItem('selectedVerses') !== null ? JSON.parse(localStorage.getItem('selectedVerses')) : []
+    let selectedVerses = localStorage.getItem('selectedVerses_bibleApp') !== null ? JSON.parse(localStorage.getItem('selectedVerses_bibleApp')) : []
 
     let sended = {"verse": parseInt(verse), "bookName": selectedBookName.current, "chapter": parseInt(selectedChapter.current), "bookId": parseInt(selectedBookId.current)}
     let isAlReady = false
@@ -150,7 +150,7 @@ function App() {
     }else{
       selectedVerses = [...selectedVerses, sended]
     }
-    localStorage.setItem("selectedVerses", JSON.stringify(selectedVerses))
+    localStorage.setItem("selectedVerses_bibleApp", JSON.stringify(selectedVerses))
     
     getTheData(selectedVersion.current, selectedBookId.current, selectedChapter.current)
   }
@@ -158,7 +158,7 @@ function App() {
   function getTheData(version, bookId, chapter){
     axios.get(`https://bolls.life/get-chapter/${version}/${bookId}/${chapter}/`)
     .then(res => {
-      let selectedVerses = localStorage.getItem('selectedVerses') !== null ? JSON.parse(localStorage.getItem('selectedVerses')) : []
+      let selectedVerses = localStorage.getItem('selectedVerses_bibleApp') !== null ? JSON.parse(localStorage.getItem('selectedVerses_bibleApp')) : []
 
       let chapter = res.data
       chapter = chapter.map((currentVerse) => {
@@ -222,8 +222,8 @@ function App() {
     selectedBookId.current = localselectedBookId
     selectedChapter.current = localselectedChapter
 
-    localStorage.setItem("selectedBookName", selectedBookName.current)
-    localStorage.setItem("selectedChapter", localselectedChapter)
+    localStorage.setItem("selectedBookName_bibleApp", selectedBookName.current)
+    localStorage.setItem("selectedChapter_bibleApp", localselectedChapter)
     // setInfoFinder("")
   }
 
@@ -271,26 +271,26 @@ function App() {
   function saveData(which){
     switch(which){
       case "version":
-        localStorage.setItem("selectedVersion", selectedVersion.current)
-        localStorage.setItem("selectedBookName", selectedBookName.current)
+        localStorage.setItem("selectedVersion_bibleApp", selectedVersion.current)
+        localStorage.setItem("selectedBookName_bibleApp", selectedBookName.current)
         
         break;
 
       case "book":
-        localStorage.setItem("selectedBookName", selectedBookName.current)
-        localStorage.setItem("selectedChapter", 1)
-        localStorage.setItem("selectedBookId", selectedBookId.current)
+        localStorage.setItem("selectedBookName_bibleApp", selectedBookName.current)
+        localStorage.setItem("selectedChapter_bibleApp", 1)
+        localStorage.setItem("selectedBookId_bibleApp", selectedBookId.current)
 
       break;
 
       case "chapter":
-        localStorage.setItem("selectedChapter", selectedChapter.current)
+        localStorage.setItem("selectedChapter_bibleApp", selectedChapter.current)
       break;
 
       case "controllers":
-        localStorage.setItem("selectedBookName", selectedBookName.current)
-        localStorage.setItem("selectedChapter", selectedChapter.current)
-        localStorage.setItem("selectedBookId", selectedBookId.current)
+        localStorage.setItem("selectedBookName_bibleApp", selectedBookName.current)
+        localStorage.setItem("selectedChapter_bibleApp", selectedChapter.current)
+        localStorage.setItem("selectedBookId_bibleApp", selectedBookId.current)
       break;
 
       default:
@@ -405,17 +405,17 @@ function App() {
 
   function changeTheme(){
     setTheme(prev => !prev)
-    localStorage.setItem("theme", !theme)
+    localStorage.setItem("theme_bibleApp", !theme)
   }
 
   function changeFontSize(event){
     setFontSize(event.target.value)
-    localStorage.setItem("fontSize", event.target.value)
+    localStorage.setItem("fontSize_bibleApp", event.target.value)
   }
 
   function changeColor(event){
     setSelectColor(event.target.value)
-    localStorage.setItem("selectColor", event.target.value)
+    localStorage.setItem("selectColor_bibleApp", event.target.value)
   }
 
   const selectedStyleForText = {
