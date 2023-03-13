@@ -209,6 +209,7 @@ function App() {
 
     if ((localselectedBookId !== undefined && localselectedBookId !== null)  && (localselectedChapter !== undefined && localselectedChapter !== null)) {
       getTheData(selectedVersion.current, localselectedBookId, localselectedChapter)
+      
     }else{
       setLoading(false)
       setError({message: "Mislead information, please try again"})
@@ -221,6 +222,7 @@ function App() {
     selectedBookName.current = localselectedBookName[0].toUpperCase() + localselectedBookName.slice(1).toLowerCase()
     selectedBookId.current = localselectedBookId
     selectedChapter.current = localselectedChapter
+    changeBooksList(allBooksByVersions)
 
     localStorage.setItem("selectedBookName_bibleApp", selectedBookName.current)
     localStorage.setItem("selectedChapter_bibleApp", localselectedChapter)
@@ -433,6 +435,7 @@ function App() {
         theme={theme}
         changeTheme={changeTheme}
       />
+      
       {
         (allBooksByVersions) ? 
         <Navbar
@@ -453,17 +456,18 @@ function App() {
         />
         :
         null
-      }   
+      }
+
       <div className="app-content">
         <div>
           {
-            (loading || /* isLoading1 || */ isLoading2 ||isLoading3 ||isLoading4) ?
+            (loading ||  isLoading2 ||isLoading3 ||isLoading4) ?
             <Loading/>
             :
             null
           }
           {
-            (error !== undefined || /* error1 || */ error2 || error3 || error4) ?
+            (error !== undefined ||  error2 || error3 || error4) ?
             <Error
               hasErrors={error.message}
             />
@@ -477,8 +481,7 @@ function App() {
               <p className='content-translation'>{selectedVersion.current}</p>
               <br />
               <div className='controlers-container'>
-                {/* <button className='controller-chapter' onClick={() => changeChapter("previous")}>{parseInt(selectedChapter.current - 1) === 0 ? allBooksByVersionsSelected[selectedBookId.current - 2].name : selectedBookName.current} {parseInt(selectedChapter.current - 1) === 0 ? allBooksByVersionsSelected[selectedBookId.current - 2].chapters : selectedChapter.current - 1}</button> */}
-                {/* <button className='controller-chapter' onClick={() => changeChapter("next")}>{selectedBookName.current} {selectedChapter.current + 1}</button> */}
+                
                 
                 <button className='controller-chapter' onClick={() => changeChapter("previous")}>Previous Chapter</button>  
                 <button className='controller-chapter' onClick={() => changeChapter("next")}>Next Chapter</button>
@@ -508,6 +511,7 @@ function App() {
         </div>
         <Footer />
       </div>
+
     </div>
   )
 }
